@@ -44,7 +44,7 @@ const AppStatusIcon: Record<
 > = {
   initiate: Spinner,
   ready: RobotExcitedIcon,
-  process: Spinner,
+  process: RobotExcitedIcon,
 }
 
 export function RemovebgApp() {
@@ -274,7 +274,7 @@ export function RemovebgApp() {
         />
         <label
           for="image"
-          class="md:rounded-2xl bg-zinc-100 flex items-center flex-col py-12 px-4 sm:px-8 justify-center relative overflow-hidden peer-disabled:cursor-wait cursor-pointer group peer-enabled:hover:ring-zinc-200 ring-2 ring-transparent transition max-w-[100vw]"
+          class="md:rounded-2xl bg-zinc-100 flex items-center flex-col py-12 px-4 sm:px-8 justify-center relative overflow-hidden peer-disabled:cursor-wait cursor-pointer group peer-enabled:hover:ring-zinc-200 ring-2 ring-transparent transition max-w-[100vw] md:-mx-4"
           role="button"
           title={disabled() ? "Please wait" : "Click to upload image"}
           onDragOver={(e) => {
@@ -326,7 +326,12 @@ export function RemovebgApp() {
       </form>
 
       <Show when={messages.length > 0}>
-        <h2 class="font-semibold text-balance mt-8 mb-3 mx-2 xs:mx-4 md:mx-0 ">Images</h2>
+        <div class="mx-2 xs:mx-4 md:mx-0">
+          <h2 class="font-semibold text-balance mt-8 mb-1 text-xl">Images</h2>
+          <div class="mb-3 text-sm text-zinc-700 text-pretty">
+            Images are processed in the order they were added. Images are not stored beyond the current session.
+          </div>
+        </div>
       </Show>
       <ol>
         <Index each={messages}>{(msg) => <TaskRow msg={msg()} />}</Index>
@@ -341,7 +346,7 @@ const MsgStatusText = {
   ready: "Model Loaded. Ready to process image",
   process: "Processing image",
   error: "Error. Refresh and try again",
-  complete: "Done. Removed background",
+  complete: "Done",
 } as const
 
 const MsgStatusIcon: Record<
@@ -373,7 +378,7 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
   })
   return (
     <li class="mx-2 xs:mx-4 md:mx-0 flex items-center py-2">
-      <div class="mr-4 relative h-14 w-14 rounded-lg overflow-hidden">
+      <div class="relative h-20 w-20 rounded-lg overflow-hidden shrink-0">
         <div
           class="absolute inset-0"
           ref={canvasContainer!}
@@ -384,16 +389,16 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
                 : "none",
           }}
         />
-        <img src={props.msg.imageUrl} alt="Image to be processed" class="h-14 w-14 rounded-lg object-cover" />
+        <img src={props.msg.imageUrl} class="h-20 w-20 rounded-lg object-cover" />
       </div>
-      <div>
+      <div class="flex items-center justify-between gap-4 w-full ml-4">
         <div>
-          <div class="flex items-center text-sm">
+          <div class="flex items-center">
             <Dynamic
-              class={cn("h-3 w-3 inline mr-1.5 text-zinc-600", {
+              class={cn("h-6 w-6 inline mr-1.5 text-zinc-600", {
                 "text-red-500": props.msg.status === "error",
                 // Visual center
-                "h-3.5 w-3.5 -mt-px": ["ready", "complete", "error"].includes(props.msg.status),
+                "h-5 w-5 -mt-px": ["ready", "complete", "error"].includes(props.msg.status),
                 "mr-1": ["complete"].includes(props.msg.status),
               })}
               component={MsgStatusIcon[props.msg.status]}
@@ -405,7 +410,7 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
             <Match when={guarded(props.msg, (m) => m.status === "error" && m)}>
               {(msg) => (
                 <div class="flex">
-                  <details class="bg-red-100 rounded pl-2 pr-1 py-0.5 text-xs max-w-screen-lg">
+                  <details class="bg-red-100 rounded pl-2 pr-1 py-0.5 text-sm max-w-screen-lg">
                     <summary class="cursor-pointer select-none text-red-900">{msg().error.message}</summary>
                     <div class="text-red-700 mt-1">{msg().error.name}</div>
                     <pre class="whitespace-pre mt-0.5 text-red-700/70">{JSON.stringify(msg().error, null, 2)}</pre>
@@ -414,11 +419,11 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
               )}
             </Match>
             <Match when={guarded(props.msg, (m) => m.status === "pending" && m)}>
-              <div class="text-xs text-zinc-600">Waiting for previous image to complete</div>
+              <div class="text-sm text-zinc-600">Waiting for previous image to complete</div>
             </Match>
             <Match when={guarded(props.msg, (m) => m.status === "complete" && m)}>
               {(msg) => (
-                <div class="text-xs text-zinc-600">
+                <div class="text-sm text-zinc-600">
                   Completed in{" "}
                   {(msg().result.time / 1000).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
@@ -429,7 +434,7 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
             </Match>
           </Switch>
         </div>
-        <div class="flex items-center gap-1 mt-0.5">
+        <div class="flex items-center gap-2 mt-0.5">
           <Show when={guarded(props.msg, (m) => m.status === "complete" && m)}>
             {(msg) => {
               let blob: Blob
@@ -496,14 +501,14 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
                     type="button"
                     onClick={copy}
                     class={cn(
-                      "text-xs ring-1 rounded-full px-2 py-1 ring-zinc-200 hover:bg-zinc-50 transition hover:text-zinc-900 text-zinc-700 hover:ring-zinc-300",
+                      "ring-1 rounded-full px-4 py-1.5 ring-zinc-200 hover:bg-zinc-50 transition hover:text-zinc-900 text-zinc-700 hover:ring-zinc-300",
                       {
                         "!text-green-600 !ring-green-600 !bg-green-50": copied(),
                       }
                     )}
                   >
-                    <Show when={!copied()} fallback={<CheckCircleIcon class="h-3.5 w-3.5 inline mr-1 -mt-px" />}>
-                      <PhotoIcon class="h-3.5 w-3.5 inline mr-1 -mt-px" />
+                    <Show when={!copied()} fallback={<CheckCircleIcon class="h-5 w-5 inline mr-1 -mt-px" />}>
+                      <PhotoIcon class="h-5 w-5 inline mr-1 -mt-px" />
                     </Show>
                     Copy
                   </button>
@@ -511,13 +516,13 @@ const TaskRow: Component<{ msg: TaskMsg }> = (props) => {
                     type="button"
                     onClick={download}
                     class={cn(
-                      "text-xs ring-1 rounded-full px-2 py-1 ring-zinc-200 hover:bg-zinc-50 transition hover:text-zinc-900 text-zinc-700 hover:ring-zinc-300",
+                      "ring-1 rounded-full px-4 py-1.5 ring-zinc-200 hover:bg-zinc-50 transition hover:text-zinc-900 text-zinc-700 hover:ring-zinc-300",
                       {
                         "!text-blue-600 !ring-blue-600 !bg-blue-50": saved(),
                       }
                     )}
                   >
-                    <DownloadIcon class="h-3.5 w-3.5 inline mr-1 -mt-px" />
+                    <DownloadIcon class="h-5 w-5 inline mr-1 -mt-px" />
                     Save
                   </button>
                 </>

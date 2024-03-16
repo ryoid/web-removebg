@@ -68,7 +68,7 @@ const model = await AutoModel.from_pretrained(model_id, {
 })
 
 const processor = await AutoProcessor.from_pretrained(model_id, {
-  // Do not require config.json to be present in the repository
+  // https://huggingface.co/briaai/RMBG-1.4/blob/main/preprocessor_config.json
   config: {
     do_normalize: true,
     do_pad: false,
