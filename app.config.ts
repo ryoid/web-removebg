@@ -3,13 +3,16 @@ import { FontaineTransform } from "fontaine"
 
 export default defineConfig({
   server: {
-    preset: "vercel",
-    prerender: {
-      crawlLinks: true,
+    preset: "cloudflare-pages-static",
+    rollupConfig: {
+      external: ["__STATIC_CONTENT_MANIFEST", "node:async_hooks"],
     },
-    routeRules: {
-      "/**": { isr: true },
-    },
+    // prerender: {
+    //   crawlLinks: true,
+    // },
+    // routeRules: {
+    //   "/**": { isr: true },
+    // },
   },
   vite: {
     worker: {
