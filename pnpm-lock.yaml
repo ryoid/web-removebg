@@ -31,6 +31,9 @@ dependencies:
     version: 0.3.10
 
 devDependencies:
+  '@cloudflare/workers-types':
+    specifier: ^4.20240320.1
+    version: 4.20240320.1
   '@webgpu/types':
     specifier: ^0.1.40
     version: 0.1.40
@@ -318,6 +321,10 @@ packages:
     dependencies:
       mime: 3.0.0
     dev: false
+
+  /@cloudflare/workers-types@4.20240320.1:
+    resolution: {integrity: sha512-CiYtVpQURPgQqtBKkmOAnfPElVZuD7Xyf1IxKtKp2B4aB9gnooapwJhzeY8c4Ls4u17SgMS0MprOkrgYwzZ6xg==}
+    dev: true
 
   /@deno/shim-deno-test@0.5.0:
     resolution: {integrity: sha512-4nMhecpGlPi0cSzT67L+Tm+GOJqvuk8gqHBziqcUQOarnuIax1z96/gJHCSIz2Z0zhxE6Rzwb3IZXPtFh51j+w==}

@@ -10,7 +10,7 @@
     "allowJs": true,
     "noEmit": true,
     "strict": true,
-    "types": ["vinxi/client", "vite/client", "@webgpu/types"],
+    "types": ["vinxi/client", "vite/client", "@webgpu/types", "@cloudflare/workers-types"],
     "isolatedModules": true,
     "paths": {
       "~/*": ["./src/*"]
